@@ -2,7 +2,7 @@ from pygame.transform import flip, scale_by
 from pygame.image import load
 
 SCALE_VALUE = {
-                1: .17,
+                1: .25,
                }
 
 
@@ -76,5 +76,7 @@ HEROES = {
                                 'weapons': [[50, 15], [50, -5]]
                                 },
                         },
+                'speed': 7,
+                'rotation_speed': 10
                 }
         }

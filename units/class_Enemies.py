@@ -13,7 +13,7 @@ from random import uniform, randint, choice
 
 from units.class_Shoots import Shoots
 
-from sources.enemies.source import ENEMIES
+from config.sources.enemies.source import ENEMIES
 
 
 class Enemies(Sprite):
@@ -21,18 +21,16 @@ class Enemies(Sprite):
                 group=None,
                 player=None):
         super().__init__(group)
-        
+
         self.group = group
         self.angle = 0
-        self.speed = randint(0, 10)
-        self.direction_list = [0, 1, -1]
-        self.moce_counter = randint(0, 600)
-        self.moveX = choice(self.direction_list)
-        self.moveY = choice(self.direction_list)
+        self.random_value()
+        self.change_direction()
         self.player = player
         self.shots = False
         self.min_distance = 300
         self.shot_distance = 1500
+        self.is_min_distance = False
         self.__post_init__()
         self.group.add(self)
 
@@ -49,9 +47,28 @@ class Enemies(Sprite):
                             self.group.background_rect.bottom - 200
                             )
                     )
-        
+
         self.rect = self.image_rotation.get_rect(center=self.pos)
         self.direction = Vector2(self.pos)
+
+
+    def random_value(self):
+        self.speed = randint(0, 10)
+        self.direction_list = [0, 1, -1]
+        self.move_counter = randint(0, 600)
+
+
+    def change_direction(self):
+        self.moveX = choice(self.direction_list)
+        self.moveY = choice(self.direction_list)
+
+
+    def check_move_count(self):
+        if self.move_counter <= 0:
+            self.random_value()
+            self.change_direction()
+        else:
+            self.move_counter -= 1
 
 
     def rotate_vector(self, vector, angle):
@@ -81,29 +98,59 @@ class Enemies(Sprite):
     def check_position(self):
         if self.rect.left <= self.group.background_rect.left:
             self.rect.left = self.group.background_rect.left
+            self.change_direction()
         if self.rect.right >= self.group.background_rect.right:
             self.rect.right = self.group.background_rect.right
+            self.change_direction()
         if self.rect.top <= self.group.background_rect.top:
             self.rect.top = self.group.background_rect.top
+            self.change_direction()
         if self.rect.bottom >= self.group.background_rect.bottom:
             self.rect.bottom = self.group.background_rect.bottom
+            self.change_direction()
+
+        if not self.is_min_distance:
+            if Vector2(self.rect.center).distance_to(self.player.rect.center) <= self.min_distance:
+                self.is_min_distance = True
+                self.random_value()
+                self.change_direction()
+
+        if Vector2(self.rect.center).distance_to(self.player.rect.center) > self.min_distance:
+            self.is_min_distance = False
 
     def move(self):
-        pass
+        self.rect.move_ip(self.moveX * self.speed, self.moveY * self.speed)
+        
+        
+    def validate_first_shot(self):
+        if self.player.first_shot:
+            self.shots = True
     
-    def shoot(self):
-        self.group.add(Shoots(pos=self.rect.center,
-                            player=self.player,
-                            group=self.group,
-                            speed=7,
-                            angle=self.angle,
-                            kill_shot_distance=2000))
-    
-    
+
+    def shot(self):
+        if Vector2(self.rect.center).distance_to(self.player.rect.center) <= self.shot_distance:
+            if self.shots and randint(0, 100) == 50:
+                self.group.add(
+                                Shoots(
+                                        pos=self.rect.center,
+                                        shoter=self,
+                                        group=self.group,
+                                        speed=7,
+                                        angle=self.angle,
+                                        kill_shot_distance=2000,
+                                        image='images/Rockets/shot1.png',
+                                        scale_value=.05
+                                        )
+                                )
+
+
     def update(self):
         self.check_position()
         self.rotation()
+        self.check_move_count()
         self.move()
+        self.validate_first_shot()
+        self.shot()
         # if randint(0, 100) == 50:
         #     self.shoot()
 

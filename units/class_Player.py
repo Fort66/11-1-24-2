@@ -8,8 +8,9 @@ from icecream import ic
 
 from units.class_Shoots import Shoots
 from config.create_Objects import screen
+from logic.class_FirstShot import FirstShot
 
-from sources.heroes.source import HEROES
+from config.sources.heroes.source import HEROES
 
 
 class Player(Sprite):
@@ -22,10 +23,11 @@ class Player(Sprite):
         self.pos = pos
         self.direction = Vector2(pos)
         self.angle = 0
-        self.speed = 7
-        self.rotation_speed = 10
+        self.speed = HEROES[1]['speed']
+        self.rotation_speed = HEROES[1]['rotation_speed']
         self.image_rotation = HEROES[1]['angle'][0]['sprite']
         self.rect = self.image_rotation.get_rect(center=self.pos)
+        self.first_shot = FirstShot()
         self.prepare_weapons(0)
         self.group.add(self)
 
@@ -45,6 +47,7 @@ class Player(Sprite):
 
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
+                self.first_shot = not self.first_shot
                 self.shoot()
 
 
@@ -56,13 +59,19 @@ class Player(Sprite):
 
     def shoot(self):
         for value in self.pos_weapons_rotation:
-            self.group.add(Shoots(pos=(value),
-                                screen=screen,
-                                group=self.group,
-                                speed=10,
-                                angle=self.angle,
-                                shoter=self,
-                                kill_shot_distance=2000))
+            self.group.add(
+                            Shoots(
+                                    pos=(value),
+                                    screen=screen,
+                                    group=self.group,
+                                    speed=10,
+                                    angle=self.angle,
+                                    shoter=self,
+                                    kill_shot_distance=2000,
+                                    image='images/Rockets/shot3.png',
+                                    scale_value=.2
+                                    )
+                            )
 
     @property
     def pos_weapons_rotation(self):
