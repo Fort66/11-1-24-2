@@ -139,7 +139,7 @@ class Enemies(Sprite):
                                         angle=self.angle,
                                         kill_shot_distance=2000,
                                         image='images/Rockets/shot1.png',
-                                        scale_value=.05
+                                        scale_value=.09
                                         )
                                 )
 
