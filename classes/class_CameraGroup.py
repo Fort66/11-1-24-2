@@ -49,7 +49,11 @@ class CameraGroup(Group):
         # self.displaySurface.blit(self.gifBackgtound, self.gifRect)
         self.background_offset = self.background_rect.topleft - self.offset
         self.display_surface.blit(self.background_surface, self.background_offset)
-        
+
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.center):
             offset_position = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image_rotation, offset_position)
+            
+            if hasattr(sprite, 'shield') and sprite.shield:
+                self.display_surface.blit(sprite.shield.frames[sprite.shield.frame][0], offset_position)
+

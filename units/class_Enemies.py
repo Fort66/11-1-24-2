@@ -12,6 +12,7 @@ import math
 from random import uniform, randint, choice
 
 from units.class_Shoots import Shoots
+from units.class_Guardian import Guadrian
 
 from config.sources.enemies.source import ENEMIES
 
@@ -27,7 +28,6 @@ class Enemies(Sprite):
         self.random_value()
         self.change_direction()
         self.player = player
-        self.shots = False
         self.min_distance = 300
         self.shot_distance = 1500
         self.is_min_distance = False
@@ -35,7 +35,8 @@ class Enemies(Sprite):
         self.group.add(self)
 
     def __post_init__(self):
-        self.image_rotation = ENEMIES[1]['angle'][0]['sprite']
+        self.image = ENEMIES[1]['angle'][0]['sprite']
+        self.image_rotation = self.image.copy()
 
         self.pos = (
                     uniform(
@@ -50,6 +51,13 @@ class Enemies(Sprite):
 
         self.rect = self.image_rotation.get_rect(center=self.pos)
         self.direction = Vector2(self.pos)
+        
+        self.shield = Guadrian(
+                                dir_path='images/Guards/guard2',
+                                speed_frame=.09,
+                                obj_rect=self.rect
+                                )
+        
 
 
     def random_value(self):
@@ -120,16 +128,11 @@ class Enemies(Sprite):
 
     def move(self):
         self.rect.move_ip(self.moveX * self.speed, self.moveY * self.speed)
-        
-        
-    def validate_first_shot(self):
-        if self.player.first_shot:
-            self.shots = True
-    
+
 
     def shot(self):
         if Vector2(self.rect.center).distance_to(self.player.rect.center) <= self.shot_distance:
-            if self.shots and randint(0, 100) == 50:
+            if self.player.first_shot and randint(0, 100) == 50:
                 self.group.add(
                                 Shoots(
                                         pos=self.rect.center,
@@ -149,8 +152,9 @@ class Enemies(Sprite):
         self.rotation()
         self.check_move_count()
         self.move()
-        self.validate_first_shot()
         self.shot()
+        self.shield.animate(self.rect)
+        
         # if randint(0, 100) == 50:
         #     self.shoot()
 

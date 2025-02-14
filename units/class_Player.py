@@ -9,6 +9,7 @@ from icecream import ic
 from units.class_Shoots import Shoots
 from config.create_Objects import screen
 from logic.class_FirstShot import FirstShot
+from units.class_Guardian import Guadrian
 
 from config.sources.heroes.source import HEROES
 
@@ -25,13 +26,22 @@ class Player(Sprite):
         self.angle = 0
         self.speed = HEROES[1]['speed']
         self.rotation_speed = HEROES[1]['rotation_speed']
-        self.image_rotation = HEROES[1]['angle'][0]['sprite']
-        self.rect = self.image_rotation.get_rect(center=self.pos)
         self.first_shot = FirstShot()
-        self.prepare_weapons(0)
+        self.__post_init__()
         self.group.add(self)
 
-    # def __post_init__(self):
+    def __post_init__(self):
+        self.image_rotation = HEROES[1]['angle'][0]['sprite']
+        self.rect = self.image_rotation.get_rect(center=self.pos)
+
+        self.shield = Guadrian(
+                                dir_path='images/Guards/guard1',
+                                speed_frame=.09,
+                                obj_rect=self.rect
+                                )
+
+        self.prepare_weapons(0)
+
 
 
     def handle_event(self, event):
@@ -123,6 +133,8 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
+        self.shield.animate(self.rect)
+
         for value in self.pos_weapons_rotation:
             value[0] += self.direction.x
             value[1] += self.direction.y
