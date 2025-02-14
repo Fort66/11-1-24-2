@@ -11,21 +11,19 @@ from classes.class_CameraGroup import CameraGroup
 from classes.class_CheckEvents import CheckEvents
 from units.class_Player import Player
 from units.class_Enemies import Enemies
+from logic.class_DeltaTime import DeltaTime
+
+
 
 from icecream import ic
-
-# space_anim = gif.GIFPygame([[pg.image.load(f'images/Backgrounds/{i}.png').convert_alpha(), .1] for i in range(10)])
-
-# gif.transform.scale(space_anim, screen.window.get_size())
-
-# rect_anim = space_anim.get_rect()
 
 
 class Game:
     def __init__(self):
         self.run = True
         self.clock = pg.time.Clock()
-        # self.delta_time = 1
+        self.dt = DeltaTime()
+        self.dt.dt = 1
         self.fps = 100
         self.win_width = screen.window.get_width()
         self.win_height = screen.window.get_height()
@@ -36,13 +34,19 @@ class Game:
 
 
     def setup(self):
-        self.player = Player(pos=screen.rect.center,
-                            group=self.camera_group,)
+        self.player = Player(
+                            pos=screen.rect.center,
+                            group=self.camera_group,
+                            )
 
 
         for _ in range(10):
-            self.camera_group.add(Enemies(group=self.camera_group,
-                                        player=self.player))
+            self.camera_group.add(
+                                    Enemies(
+                                            group=self.camera_group,
+                                            player=self.player
+                                            )
+                                    )
 
     def create_groups(self):
         self.camera_group = CameraGroup(self)
@@ -63,4 +67,7 @@ class Game:
 
             self.screen.update_caption(f'{str(round(self.clock.get_fps(), 2))}')
             pg.display.update()
+            # self.clock.tick()
             self.clock.tick()
+
+

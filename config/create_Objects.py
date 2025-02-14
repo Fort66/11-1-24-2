@@ -9,6 +9,7 @@ from UI.Screens.class_ScreenGame import ScreenGame
 
 
 
+
 # экземпляр класса ScreenGame (окно игры)
 screen = ScreenGame(size=(1280, 720),
                     caption='Game',
@@ -16,4 +17,7 @@ screen = ScreenGame(size=(1280, 720),
                     icon='', # пример иконки
                     is_resizable=True, # изменяемый размер True/False
                     is_full_screen=False) #полноэкранный True/False
+
+
+
 

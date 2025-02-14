@@ -10,6 +10,7 @@ from units.class_Shoots import Shoots
 from config.create_Objects import screen
 from logic.class_FirstShot import FirstShot
 from units.class_Guardian import Guadrian
+from logic.class_DeltaTime import DeltaTime
 
 from config.sources.heroes.source import HEROES
 
@@ -17,13 +18,15 @@ from config.sources.heroes.source import HEROES
 class Player(Sprite):
     def __init__(self,
                 pos=None,
-                group=None,):
+                group=None,
+                ):
         super().__init__(group)
 
         self.group = group
         self.pos = pos
         self.direction = Vector2(pos)
         self.angle = 0
+        self.dt = DeltaTime()
         self.speed = HEROES[1]['speed']
         self.rotation_speed = HEROES[1]['rotation_speed']
         self.first_shot = FirstShot()
@@ -96,8 +99,8 @@ class Player(Sprite):
     def vector_rotation(self, vector, angle):
         vector = Vector2(vector)
         return vector.rotate_rad(angle)
-        
-    
+
+
     def rotation(self):
         for value in HEROES[1]['angle']:
             if self.angle <= value:
@@ -122,13 +125,13 @@ class Player(Sprite):
     def move(self):
         keys = get_pressed()
         if keys[K_a]:
-            self.rect.move_ip(-self.speed, 0)
+            self.rect.move_ip(-self.speed * self.dt.dt, 0)
         if keys[K_d]:
-            self.rect.move_ip(self.speed, 0)
+            self.rect.move_ip(self.speed * self.dt.dt, 0)
         if keys[K_w]:
-            self.rect.move_ip(0, -self.speed)
+            self.rect.move_ip(0, -self.speed * self.dt.dt)
         if keys[K_s]:
-            self.rect.move_ip(0, self.speed)
+            self.rect.move_ip(0, self.speed * self.dt.dt)
 
     def update(self):
         self.check_position()
@@ -138,4 +141,6 @@ class Player(Sprite):
         for value in self.pos_weapons_rotation:
             value[0] += self.direction.x
             value[1] += self.direction.y
+
+
 

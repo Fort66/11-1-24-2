@@ -3,6 +3,7 @@ from pygame.sprite import Sprite
 from pygame.math import Vector2
 from pygame.transform import rotozoom, scale_by
 from pygame.image import load
+from logic.class_DeltaTime import DeltaTime
 
 from icecream import ic
 
@@ -28,6 +29,7 @@ class Shoots(Sprite):
         self.angle = angle
         self.shoter = shoter
         self.damage = damage
+        self.dt = DeltaTime()
         self.kill_shot_distance = kill_shot_distance
         self.old_shot_coordinate = Vector2(self.shoter.rect.center)
         if image:
@@ -40,7 +42,7 @@ class Shoots(Sprite):
         self.offset = Vector2().rotate(self.angle)
         self.pos = Vector2(pos) + self.offset
         self.direction = Vector2(1, 0).rotate(-self.angle)
-        self.speed = speed
+        self.speed = speed * self.dt.dt
         self.group.add(self)
 
 

@@ -13,8 +13,10 @@ from random import uniform, randint, choice
 
 from units.class_Shoots import Shoots
 from units.class_Guardian import Guadrian
+from logic.class_DeltaTime import DeltaTime
 
 from config.sources.enemies.source import ENEMIES
+
 
 
 class Enemies(Sprite):
@@ -25,6 +27,7 @@ class Enemies(Sprite):
 
         self.group = group
         self.angle = 0
+        self.dt = DeltaTime()
         self.random_value()
         self.change_direction()
         self.player = player
@@ -61,7 +64,7 @@ class Enemies(Sprite):
 
 
     def random_value(self):
-        self.speed = randint(0, 10)
+        self.speed = randint(0, 10) * self.dt.dt
         self.direction_list = [0, 1, -1]
         self.move_counter = randint(0, 600)
 
@@ -154,7 +157,7 @@ class Enemies(Sprite):
         self.move()
         self.shot()
         self.shield.animate(self.rect)
-        
+
         # if randint(0, 100) == 50:
         #     self.shoot()
 
