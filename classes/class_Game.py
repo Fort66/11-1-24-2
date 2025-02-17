@@ -1,18 +1,18 @@
 import pygame as pg
-import gif_pygame as gif
-
-pg.mixer.pre_init(44100, -16, 2, 2048) # Инициализация звука. Инициализация плейера. (частота, биты (Если значение отрицательное, то будут использоваться подписанные значения выборки. Положительные значения означают, что будут использоваться неподписанные аудиосэмплированные выборки. Неверное значение вызывает исключение), каналы, буфер)
-
-from pygame.locals import QUIT, KEYDOWN, K_ESCAPE
+pg.mixer.pre_init(
+    44100, -16, 2, 2048
+)
 
 
 from config.create_Objects import screen
 from classes.class_CameraGroup import CameraGroup
 from classes.class_CheckEvents import CheckEvents
+from classes.class_SptiteGroups import SpriteGroups
+
 from units.class_Player import Player
 from units.class_Enemies import Enemies
-from logic.class_DeltaTime import DeltaTime
 
+from UI.Screens.class_MiniMap import MiniMap
 
 
 from icecream import ic
@@ -22,52 +22,28 @@ class Game:
     def __init__(self):
         self.run = True
         self.clock = pg.time.Clock()
-        self.dt = DeltaTime()
-        self.dt.dt = 1
-        self.fps = 100
-        self.win_width = screen.window.get_width()
-        self.win_height = screen.window.get_height()
-        self.check_events = CheckEvents(self)
         self.screen = screen
-        self.create_groups()
+        self.fps = 100
+        self.check_events = CheckEvents(self)
+        self.sprite_groups = SpriteGroups()
+        self.sprite_groups.camera_group = CameraGroup(self)
+        self.mini_map = MiniMap(scale_value=.25, color_map=(0, 100, 0, 170))
         self.setup()
 
-
     def setup(self):
-        self.player = Player(
-                            pos=screen.rect.center,
-                            group=self.camera_group,
-                            )
-
+        self.player = Player(pos=screen.rect.center)
 
         for _ in range(10):
-            self.camera_group.add(
-                                    Enemies(
-                                            group=self.camera_group,
-                                            player=self.player
-                                            )
-                                    )
-
-    def create_groups(self):
-        self.camera_group = CameraGroup(self)
-
+            self.sprite_groups.camera_group.add(Enemies(player=self.player))
 
     def run_game(self):
         while self.run:
             screen.window.fill(screen.color)
-            # self.delta_time = self.clock.tick(self.fps) / 1000
-            # space_anim.render(screen.window, rect_anim)
-
-            # обработка игровых событий
             self.check_events.check_events()
 
-            self.camera_group.update()
-            self.camera_group.custom_draw(self.player)
+            self.sprite_groups.camera_group.update()
+            self.sprite_groups.camera_group.custom_draw(self.player)
 
-
-            self.screen.update_caption(f'{str(round(self.clock.get_fps(), 2))}')
+            self.screen.update_caption(f"{str(round(self.clock.get_fps(), 2))}")
             pg.display.update()
-            # self.clock.tick()
             self.clock.tick()
-
-

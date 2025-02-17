@@ -5,31 +5,32 @@ from pygame.transform import rotozoom, scale_by
 from pygame.image import load
 from logic.class_DeltaTime import DeltaTime
 
+from classes.class_SptiteGroups import SpriteGroups
+
 from icecream import ic
 
-class Shoots(Sprite):
-    def __init__(self,
-                pos=(0, 0),
-                group=None,
-                screen=None,
-                size=(20, 3),
-                color='white',
-                speed=0,
-                angle=0,
-                shoter=None,
-                kill_shot_distance=None,
-                image=None,
-                scale_value=None,
-                damage=None
-                ):
-        super().__init__(group)
 
-        self.screen = screen
-        self.group = group
+class Shoots(Sprite):
+    def __init__(
+        self,
+        pos=(0, 0),
+        size=(20, 3),
+        color="white",
+        speed=0,
+        angle=0,
+        shoter=None,
+        kill_shot_distance=None,
+        image=None,
+        scale_value=None,
+        damage=None,
+    ):
+        self.sptite_groups = SpriteGroups()
+        super().__init__(self.sptite_groups.camera_group)
+
         self.angle = angle
         self.shoter = shoter
         self.damage = damage
-        self.dt = DeltaTime()
+        self.speed = speed
         self.kill_shot_distance = kill_shot_distance
         self.old_shot_coordinate = Vector2(self.shoter.rect.center)
         if image:
@@ -42,20 +43,17 @@ class Shoots(Sprite):
         self.offset = Vector2().rotate(self.angle)
         self.pos = Vector2(pos) + self.offset
         self.direction = Vector2(1, 0).rotate(-self.angle)
-        self.speed = speed * self.dt.dt
-        self.group.add(self)
-
 
     def check_position(self):
-        if Vector2(self.rect.center).distance_to(self.old_shot_coordinate) > self.kill_shot_distance:
+        if (
+            Vector2(self.rect.center).distance_to(self.old_shot_coordinate)
+            > self.kill_shot_distance
+        ):
             self.kill()
 
     def move(self):
         self.pos += self.direction * self.speed
         self.rect.center = self.pos
-        # self.rect.move_ip(self.speed, 0)
-        # self.rect.center = self.pos
-
 
     def update(self):
         self.check_position()

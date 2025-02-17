@@ -5,3 +5,8 @@ class DeltaTime:
         self.__dict__ = self.__delta_dict
 
 
+dt = DeltaTime()
+
+
+print(dt)
+print(dt.__dict__)
