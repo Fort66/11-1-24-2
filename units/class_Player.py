@@ -15,6 +15,9 @@ from logic.class_DeltaTime import DeltaTime
 
 from classes.class_SptiteGroups import SpriteGroups
 
+from functions.function_player_collision import player_collision
+
+
 
 class Player(Sprite):
     def __init__(
@@ -32,7 +35,6 @@ class Player(Sprite):
         self.first_shot = False
         self.__post_init__()
 
-
     def __post_init__(self):
         self.image_rotation = HEROES[1]["angle"][0]["sprite"]
         self.rect = self.image_rotation.get_rect(center=self.pos)
@@ -44,7 +46,7 @@ class Player(Sprite):
             dir_path="images/Guards/guard1",
             speed_frame=0.09,
             obj_rect=self.rect,
-            guard_level=10
+            guard_level=10,
         )
 
         self.prepare_weapons(0)
@@ -71,8 +73,8 @@ class Player(Sprite):
 
     def shoot(self):
         for value in self.pos_weapons_rotation:
-            self.sptite_groups.camera_group.add(shot:=
-                Shoots(
+            self.sptite_groups.camera_group.add(
+                shot := Shoots(
                     pos=(value),
                     speed=10,
                     angle=self.angle,
@@ -133,6 +135,8 @@ class Player(Sprite):
         self.check_position()
         self.move()
         self.shield.animate(self.rect)
+        
+        player_collision(self)
 
         for value in self.pos_weapons_rotation:
             value[0] += self.direction.x
