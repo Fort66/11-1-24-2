@@ -50,9 +50,14 @@ class CameraGroup(Group):
             offset_position = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image_rotation, offset_position)
 
-            if hasattr(sprite, "shield") and sprite.shield:
+            if hasattr(sprite, "shield"): #and sprite.shield:
                 self.display_surface.blit(
                     sprite.shield.frames[sprite.shield.frame][0], offset_position
+                )
+
+            if hasattr(sprite, 'expl_enemies_rocket') and sprite.expl_enemies_rocket:
+                self.display_surface.blit(
+                    sprite.expl_enemies_rocket.frames[sprite.expl_enemies_rocket.frame][0], offset_position
                 )
 
         self.game.mini_map.update()

@@ -53,7 +53,11 @@ class Enemies(Sprite):
         self.direction = Vector2(self.pos)
 
         self.shield = Guadrian(
-            dir_path="images/Guards/guard2", speed_frame=0.09, obj_rect=self.rect, guard_level=randint(3, 10)
+            dir_path="images/Guards/guard2",
+            speed_frame=0.09,
+            obj_rect=self.rect,
+            guard_level=randint(3, 10),
+            loops=-1
         )
 
     def random_value(self):
@@ -137,7 +141,7 @@ class Enemies(Sprite):
                     Shoots(
                         pos=self.rect.center,
                         shoter=self,
-                        speed=7,
+                        speed=12,
                         angle=self.angle,
                         kill_shot_distance=2000,
                         image="images/Rockets/shot1.png",

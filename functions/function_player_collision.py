@@ -1,5 +1,6 @@
 from pygame.sprite import spritecollide, groupcollide
 from classes.class_SptiteGroups import SpriteGroups
+from units.class_Explosion import Explosion
 
 
 
@@ -10,6 +11,13 @@ def player_collision(obj):
 
         if hits:
             for hit in hits:
-                
+                obj.expl_enemies_rocket = Explosion(
+                    dir_path='images/Explosions/explosion_rocket1',
+                    speed_frame=.05,
+                    obj_rect=obj.rect,
+                    loops=1
+                )
+                obj.hit_rect = hit.rect
+
                 hit.kill()
 

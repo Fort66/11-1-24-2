@@ -3,11 +3,11 @@ from pygame.sprite import Sprite
 from pygame.math import Vector2
 from pygame.transform import rotozoom, scale_by
 from pygame.image import load
-from logic.class_DeltaTime import DeltaTime
-
 from classes.class_SptiteGroups import SpriteGroups
 
 from icecream import ic
+
+from functions.function_shots_collision import shots_collision
 
 
 class Shoots(Sprite):
@@ -58,3 +58,11 @@ class Shoots(Sprite):
     def update(self):
         self.check_position()
         self.move()
+
+        shots_collision(self)
+
+        if hasattr(self, 'expl_enemies_rocket'):
+            if self.expl_enemies_rocket.loops > 0:
+                self.expl_enemies_rocket.animate(self.rect)
+            else:
+                delattr(self, 'expl_enemies_rocket')

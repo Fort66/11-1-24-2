@@ -47,6 +47,7 @@ class Player(Sprite):
             speed_frame=0.09,
             obj_rect=self.rect,
             guard_level=10,
+            loops=-1
         )
 
         self.prepare_weapons(0)
@@ -76,7 +77,7 @@ class Player(Sprite):
             self.sptite_groups.camera_group.add(
                 shot := Shoots(
                     pos=(value),
-                    speed=10,
+                    speed=12,
                     angle=self.angle,
                     shoter=self,
                     kill_shot_distance=2000,
@@ -135,8 +136,15 @@ class Player(Sprite):
         self.check_position()
         self.move()
         self.shield.animate(self.rect)
-        
-        player_collision(self)
+
+        # player_collision(self)
+
+        # if hasattr(self, 'expl_enemies_rocket'):
+        #     if self.expl_enemies_rocket.loops > 0:
+        #         self.expl_enemies_rocket.animate(self.rect)
+        #     # else:
+            #     delattr(self, 'expl_enemies_rocket')
+
 
         for value in self.pos_weapons_rotation:
             value[0] += self.direction.x
