@@ -11,11 +11,13 @@ from random import uniform, randint, choice
 
 from units.class_Shoots import Shoots
 from units.class_Guardian import Guadrian
+from config.create_Objects import checks
 
 from config.sources.enemies.source import ENEMIES
 
 from classes.class_SptiteGroups import SpriteGroups
 
+from functions.function_enemies_collision import enemies_collision
 
 
 class Enemies(Sprite):
@@ -32,7 +34,6 @@ class Enemies(Sprite):
         self.random_value()
         self.change_direction()
         self.__post_init__()
-
 
     def __post_init__(self):
         self.image = ENEMIES[1]["angle"][0]["sprite"]
@@ -52,13 +53,17 @@ class Enemies(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.pos)
         self.direction = Vector2(self.pos)
 
-        self.shield = Guadrian(
-            dir_path="images/Guards/guard2",
-            speed_frame=0.09,
-            obj_rect=self.rect,
-            guard_level=randint(3, 10),
-            loops=-1
+        self.sptite_groups.camera_group.add(
+            shield := Guadrian(
+                dir_path="images/Guards/guard2",
+                speed_frame=0.09,
+                obj_rect=self.rect,
+                guard_level=randint(3, 10),
+                loops=-1,
+                obj=self,
+            )
         )
+        self.sptite_groups.enemies_guard_group.add(shield)
 
     def random_value(self):
         self.speed = randint(0, 10)
@@ -100,17 +105,8 @@ class Enemies(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
 
     def check_position(self):
-        if self.rect.left <= self.sptite_groups.camera_group.background_rect.left:
-            self.rect.left = self.sptite_groups.camera_group.background_rect.left
-            self.change_direction()
-        if self.rect.right >= self.sptite_groups.camera_group.background_rect.right:
-            self.rect.right = self.sptite_groups.camera_group.background_rect.right
-            self.change_direction()
-        if self.rect.top <= self.sptite_groups.camera_group.background_rect.top:
-            self.rect.top = self.sptite_groups.camera_group.background_rect.top
-            self.change_direction()
-        if self.rect.bottom >= self.sptite_groups.camera_group.background_rect.bottom:
-            self.rect.bottom = self.sptite_groups.camera_group.background_rect.bottom
+        checks.position(self, self.sptite_groups.camera_group.background_rect)
+        if not checks.resolved_move:
             self.change_direction()
 
         if not self.is_min_distance:
@@ -119,8 +115,9 @@ class Enemies(Sprite):
                 <= self.min_distance
             ):
                 self.is_min_distance = True
-                self.random_value()
+                # self.random_value()
                 self.change_direction()
+
 
         if (
             Vector2(self.rect.center).distance_to(self.player.rect.center)
@@ -137,8 +134,8 @@ class Enemies(Sprite):
             <= self.shot_distance
         ):
             if self.player.first_shot and randint(0, 100) == 50:
-                self.sptite_groups.camera_group.add(shot:=
-                    Shoots(
+                self.sptite_groups.camera_group.add(
+                    shot := Shoots(
                         pos=self.rect.center,
                         shoter=self,
                         speed=12,
@@ -156,6 +153,7 @@ class Enemies(Sprite):
         self.check_move_count()
         self.move()
         self.shot()
-        self.shield.animate(self.rect)
 
-
+        # ic(self.sptite_groups.enemies_guard_group)
+        if len(self.sptite_groups.enemies_guard_group) == 0:
+            enemies_collision()

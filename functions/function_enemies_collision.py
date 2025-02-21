@@ -4,9 +4,9 @@ from units.class_Explosion import Explosion
 
 
 
-def player_collision():
+def enemies_collision():
     sprite_groups = SpriteGroups()
-    object_collide = groupcollide(sprite_groups.enemies_shot_group, sprite_groups.player_group, dokilla=True, dokillb=False, collided=None)
+    object_collide = groupcollide(sprite_groups.player_shot_group, sprite_groups.enemies_group, dokilla=True, dokillb=False, collided=None)
     # if len(sprite_groups.enemies_shot_group):
     #     hits = groupcollide(sprite_groups.enemies_shot_group, sprite_groups.player_group, dokilla=False, dokillb=False, collided=None)
 
@@ -21,4 +21,3 @@ def player_collision():
     #             obj.hit_rect = hit.rect
 
     #             hit.kill()
-

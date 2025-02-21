@@ -6,6 +6,8 @@
 
 
 from UI.Screens.class_ScreenGame import ScreenGame
+from logic.class_Checks import Checks
+from config.sources.class_Weapons import Weapons
 
 
 
@@ -18,6 +20,9 @@ screen = ScreenGame(size=(1280, 720),
                     is_resizable=True, # изменяемый размер True/False
                     is_full_screen=False) #полноэкранный True/False
 
+
+checks = Checks()
+weapons = Weapons()
 
 
 

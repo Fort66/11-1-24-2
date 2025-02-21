@@ -6,17 +6,16 @@ from pygame.key import get_pressed
 
 from icecream import ic
 
-from config.create_Objects import screen
+from config.create_Objects import checks, weapons
 from config.sources.heroes.source import HEROES
 from units.class_Shoots import Shoots
 from units.class_Guardian import Guadrian
-from logic.class_DeltaTime import DeltaTime
+
 
 
 from classes.class_SptiteGroups import SpriteGroups
 
 from functions.function_player_collision import player_collision
-
 
 
 class Player(Sprite):
@@ -42,13 +41,17 @@ class Player(Sprite):
         self.speed = HEROES[1]["speed"]
         self.rotation_speed = HEROES[1]["rotation_speed"]
 
-        self.shield = Guadrian(
-            dir_path="images/Guards/guard1",
-            speed_frame=0.09,
-            obj_rect=self.rect,
-            guard_level=10,
-            loops=-1
+        self.sptite_groups.camera_group.add(
+            shield := Guadrian(
+                dir_path="images/Guards/guard1",
+                speed_frame=0.09,
+                obj_rect=self.rect,
+                guard_level=10,
+                loops=-1,
+                obj=self,
+            )
         )
+        self.sptite_groups.player_guard_group.add(shield)
 
         self.prepare_weapons(0)
 
@@ -68,15 +71,18 @@ class Player(Sprite):
                 self.shoot()
 
     def prepare_weapons(self, angle):
-        self.pos_weapons = []
-        for value in HEROES[1]["angle"][angle]["weapons"]:
-            self.pos_weapons.append(value)
+        weapons.load_weapons(
+            obj=self,
+            source=HEROES[1]["angle"][angle]["weapons"],
+            angle=angle,
+        )
 
     def shoot(self):
-        for value in self.pos_weapons_rotation:
+        value = self.pos_weapons_rotation()
+        for pos in value:
             self.sptite_groups.camera_group.add(
                 shot := Shoots(
-                    pos=(value),
+                    pos=(pos),
                     speed=12,
                     angle=self.angle,
                     shoter=self,
@@ -87,18 +93,8 @@ class Player(Sprite):
             )
             self.sptite_groups.player_shot_group.add(shot)
 
-    @property
     def pos_weapons_rotation(self):
-        result = []
-        for weapon in self.pos_weapons:
-            x, y = weapon
-            newX, newY = self.vector_rotation([x, y], -self.angle / 57.5)
-            result.append([self.rect.centerx + newX, self.rect.centery + newY])
-        return result
-
-    def vector_rotation(self, vector, angle):
-        vector = Vector2(vector)
-        return vector.rotate_rad(angle)
+        return weapons.pos_rotation(obj=self, angle=self.angle)
 
     def rotation(self):
         for value in HEROES[1]["angle"]:
@@ -112,14 +108,7 @@ class Player(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
 
     def check_position(self):
-        if self.rect.left <= self.sptite_groups.camera_group.background_rect.left:
-            self.rect.left = self.sptite_groups.camera_group.background_rect.left
-        if self.rect.right >= self.sptite_groups.camera_group.background_rect.right:
-            self.rect.right = self.sptite_groups.camera_groupbackground_rect.right
-        if self.rect.top <= self.sptite_groups.camera_group.background_rect.top:
-            self.rect.top = self.sptite_groups.camera_group.background_rect.top
-        if self.rect.bottom >= self.sptite_groups.camera_group.background_rect.bottom:
-            self.rect.bottom = self.sptite_groups.camera_group.background_rect.bottom
+        checks.position(self, self.sptite_groups.camera_group.background_rect)
 
     def move(self):
         keys = get_pressed()
@@ -135,17 +124,8 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
-        self.shield.animate(self.rect)
 
-        # player_collision(self)
+        if len(self.sptite_groups.player_guard_group) == 0:
+            player_collision()
 
-        # if hasattr(self, 'expl_enemies_rocket'):
-        #     if self.expl_enemies_rocket.loops > 0:
-        #         self.expl_enemies_rocket.animate(self.rect)
-        #     # else:
-            #     delattr(self, 'expl_enemies_rocket')
-
-
-        for value in self.pos_weapons_rotation:
-            value[0] += self.direction.x
-            value[1] += self.direction.y
+        weapons.update_weapons(self, self.angle)

@@ -24,7 +24,7 @@ class MiniMap:
         self.ratioY = (
             self.map_size[1] / self.spite_groups.camera_group.background_rect[3]
         )
-        self.map_rect = self.map_surface.get_rect(bottomright=screen.rect.bottomright)
+        self.map_rect = self.map_surface.get_rect(topleft=screen.rect.topleft)
 
     def change_size_map(self):
         if self.old_screen_size != screen.window.get_size():
@@ -88,5 +88,5 @@ class MiniMap:
         self.draw_enemies_shot()
         screen.window.blit(
             self.map_surface,
-            (screen.rect[2] - self.map_size[0], screen.rect[3] - self.map_size[1]),
+            self.map_rect,
         )
