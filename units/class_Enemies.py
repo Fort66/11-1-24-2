@@ -57,10 +57,11 @@ class Enemies(Sprite):
             shield := Guadrian(
                 dir_path="images/Guards/guard2",
                 speed_frame=0.09,
-                obj_rect=self.rect,
                 guard_level=randint(3, 10),
                 loops=-1,
                 obj=self,
+                scale_value=(1, 1),
+                size=self.rect.size
             )
         )
         self.sptite_groups.enemies_guard_group.add(shield)
@@ -151,7 +152,7 @@ class Enemies(Sprite):
         self.check_position()
         self.rotation()
         self.check_move_count()
-        self.move()
+        # self.move()
         self.shot()
 
         # ic(self.sptite_groups.enemies_guard_group)

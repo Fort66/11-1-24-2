@@ -23,10 +23,10 @@ class Player(Sprite):
         self,
         pos=None,
     ):
-        self.sptite_groups = SpriteGroups()
-        super().__init__(self.sptite_groups.camera_group)
-        self.sptite_groups.camera_group.add(self)
-        self.sptite_groups.player_group.add(self)
+        self.sprite_groups = SpriteGroups()
+        super().__init__(self.sprite_groups.camera_group)
+        self.sprite_groups.camera_group.add(self)
+        self.sprite_groups.player_group.add(self)
 
         self.pos = pos
         self.direction = Vector2(pos)
@@ -41,17 +41,19 @@ class Player(Sprite):
         self.speed = HEROES[1]["speed"]
         self.rotation_speed = HEROES[1]["rotation_speed"]
 
-        self.sptite_groups.camera_group.add(
+        self.sprite_groups.camera_group.add(
             shield := Guadrian(
                 dir_path="images/Guards/guard1",
                 speed_frame=0.09,
-                obj_rect=self.rect,
                 guard_level=10,
                 loops=-1,
-                obj=self,
+                angle=self.angle,
+                scale_value=(1, 1),
+                size=self.rect.size,
+                obj=self
             )
         )
-        self.sptite_groups.player_guard_group.add(shield)
+        self.sprite_groups.player_guard_group.add(shield)
 
         self.prepare_weapons(0)
 
@@ -80,7 +82,7 @@ class Player(Sprite):
     def shoot(self):
         value = self.pos_weapons_rotation()
         for pos in value:
-            self.sptite_groups.camera_group.add(
+            self.sprite_groups.camera_group.add(
                 shot := Shoots(
                     pos=(pos),
                     speed=12,
@@ -91,7 +93,7 @@ class Player(Sprite):
                     scale_value=0.2,
                 )
             )
-            self.sptite_groups.player_shot_group.add(shot)
+            self.sprite_groups.player_shot_group.add(shot)
 
     def pos_weapons_rotation(self):
         return weapons.pos_rotation(obj=self, angle=self.angle)
@@ -108,7 +110,7 @@ class Player(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
 
     def check_position(self):
-        checks.position(self, self.sptite_groups.camera_group.background_rect)
+        checks.position(self, self.sprite_groups.camera_group.background_rect)
 
     def move(self):
         keys = get_pressed()
@@ -125,7 +127,7 @@ class Player(Sprite):
         self.check_position()
         self.move()
 
-        if len(self.sptite_groups.player_guard_group) == 0:
+        if len(self.sprite_groups.player_guard_group) == 0:
             player_collision()
 
         weapons.update_weapons(self, self.angle)
