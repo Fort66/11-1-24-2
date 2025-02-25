@@ -60,7 +60,7 @@ class Animator:
         self.rect = self.image_rotation.get_rect()
 
     def animate(self):
-        self.size = self.image_rotation.get_size()
+        # self.size = self.image_rotation.get_size()
 
         if self.frame_time == 0:
             self.frame_time = time()

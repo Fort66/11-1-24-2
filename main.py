@@ -1,6 +1,5 @@
 import pygame as pg
 from sys import exit
-from sys import stdout
 
 from loguru import logger
 
