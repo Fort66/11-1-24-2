@@ -155,6 +155,4 @@ class Enemies(Sprite):
         # self.move()
         self.shot()
 
-        # ic(self.sptite_groups.enemies_guard_group)
-        if len(self.sptite_groups.enemies_guard_group) == 0:
-            enemies_collision()
+        enemies_collision()

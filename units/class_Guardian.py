@@ -46,7 +46,7 @@ class Guadrian(Animator, Sprite):
         self.image_rotation = rotozoom(self.image_rotation, self.angle, 1)
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
         super().animate()
-        
+
         if guards_collision():
             if self.destruction_time <= 0:
                 self.destruction_time = time()

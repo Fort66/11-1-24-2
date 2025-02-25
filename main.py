@@ -1,7 +1,6 @@
 import pygame as pg
 from sys import exit
 from sys import stdout
-import gif_pygame
 
 from loguru import logger
 

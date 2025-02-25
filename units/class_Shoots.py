@@ -7,7 +7,10 @@ from classes.class_SptiteGroups import SpriteGroups
 
 from icecream import ic
 
-from functions.function_shots_collision import shots_collision
+from functions.function_shots_collision import (
+    player_collision,
+    enemies_collision,
+    )
 
 
 class Shoots(Sprite):
@@ -58,11 +61,7 @@ class Shoots(Sprite):
     def update(self):
         self.check_position()
         self.move()
+        player_collision()
+        enemies_collision()
 
-        shots_collision(self)
 
-        if hasattr(self, 'expl_enemies_rocket'):
-            if self.expl_enemies_rocket.loops > 0:
-                self.expl_enemies_rocket.animate(self.rect)
-            else:
-                delattr(self, 'expl_enemies_rocket')

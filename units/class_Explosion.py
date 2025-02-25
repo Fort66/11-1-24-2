@@ -1,8 +1,37 @@
+from pygame.sprite import Sprite
+from pygame.transform import rotozoom
 from classes.class_Animator import Animator
 
 
-class Explosion(Animator):
+class Explosion(Animator, Sprite):
     def __init__(
-        self, dir_path, speed_frame, obj_rect, loops
+        self,
+        dir_path=None,
+        speed_frame=None,
+        loops=None,
+        obj=None,
+        scale_value=None,
+        size=None,
+        angle=None
     ):
-        super().__init__(dir_path, speed_frame, obj_rect, loops)
+        super().__init__(
+            dir_path=dir_path,
+            speed_frame=speed_frame,
+            loops=loops,
+            scale_value=scale_value,
+            size=size,
+            )
+
+        self.obj = obj
+        self.angle = angle
+
+    def update(self):
+        self.rect.center = self.obj.rect.center
+        self.angle = self.obj.angle
+        if self.loops > 0:
+            self.image_rotation = self.frames[self.frame][0]
+            self.image_rotation = rotozoom(self.image_rotation, self.angle, 1)
+            self.rect = self.image_rotation.get_rect(center=self.rect.center)
+            super().animate()
+        else:
+            self.kill()
