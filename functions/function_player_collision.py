@@ -6,19 +6,29 @@ from units.class_Explosion import Explosion
 
 def player_collision():
     sprite_groups = SpriteGroups()
-    object_collide = groupcollide(sprite_groups.enemies_shot_group, sprite_groups.player_group, dokilla=True, dokillb=False, collided=None)
-    # if len(sprite_groups.enemies_shot_group):
-    #     hits = groupcollide(sprite_groups.enemies_shot_group, sprite_groups.player_group, dokilla=False, dokillb=False, collided=None)
+    object_collide = groupcollide(
+        sprite_groups.player_group,
+        sprite_groups.enemies_shot_group,
+        dokilla=False,
+        dokillb=True,
+        collided=None
+        )
+    if object_collide:
+        lot_hits = len(list(object_collide.values())[0])
+        hits = list(object_collide.keys())[0]
 
-    #     if hits:
-    #         for hit in hits:
-    #             obj.expl_enemies_rocket = Explosion(
-    #                 dir_path='images/Explosions/explosion_rocket1',
-    #                 speed_frame=.05,
-    #                 obj_rect=obj.rect,
-    #                 loops=1
-    #             )
-    #             obj.hit_rect = hit.rect
+        if hits.hp > 0:
+            hits.decrease_hp(lot_hits)
 
-    #             hit.kill()
+        if hits.hp <= 0:
+            explosion = Explosion(
+                dir_path='images/explosions/ship1_expl',
+                speed_frame=.12,
+                scale_value=(.75, .75),
+                loops=1,
+                obj=hits,
+                angle=hits.angle,
+            )
+            if not explosion:
+                hits.kill()
 

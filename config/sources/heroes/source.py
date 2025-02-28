@@ -76,7 +76,7 @@ HEROES = {
                                 'weapons': [[50, 15], [50, -5]]
                                 },
                         },
-                'speed': 10,
+                'speed': 5,
                 'rotation_speed': 10
                 }
         }

@@ -3,7 +3,7 @@ from pygame.image import load
 
 SCALE_VALUE = {
                 1: .225,
-               }
+                }
 
 
 ENEMIES = {

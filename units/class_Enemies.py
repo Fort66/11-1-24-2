@@ -8,10 +8,11 @@ from icecream import ic
 
 import math
 from random import uniform, randint, choice
+from time import time
 
 from units.class_Shoots import Shoots
 from units.class_Guardian import Guadrian
-from config.create_Objects import checks
+from config.create_Objects import checks, weapons
 
 from config.sources.enemies.source import ENEMIES
 
@@ -31,6 +32,8 @@ class Enemies(Sprite):
         self.min_distance = 300
         self.shot_distance = 1500
         self.is_min_distance = False
+        self.shot_time = 0
+        self.hp = 2
         self.random_value()
         self.change_direction()
         self.__post_init__()
@@ -61,15 +64,28 @@ class Enemies(Sprite):
                 loops=-1,
                 obj=self,
                 scale_value=(1, 1),
-                size=self.rect.size
+                size=self.rect.size,
+                owner=self
             )
         )
         self.sptite_groups.enemies_guard_group.add(shield)
+        self.prepare_weapons(0)
+
+    def prepare_weapons(self, angle):
+        weapons.load_weapons(
+            obj=self,
+            source=ENEMIES[1]["angle"][angle]["weapons"],
+            angle=angle,
+        )
+
+    def pos_weapons_rotation(self):
+        return weapons.pos_rotation(obj=self, angle=self.angle)
 
     def random_value(self):
-        self.speed = randint(0, 10)
+        self.speed = randint(0, 5)
         self.direction_list = [0, 1, -1]
         self.move_counter = randint(0, 600)
+        self.permission_shot = uniform(1, 3)
 
     def change_direction(self):
         self.moveX = choice(self.direction_list)
@@ -134,25 +150,40 @@ class Enemies(Sprite):
             Vector2(self.rect.center).distance_to(self.player.rect.center)
             <= self.shot_distance
         ):
-            if self.player.first_shot and randint(0, 100) == 50:
-                self.sptite_groups.camera_group.add(
-                    shot := Shoots(
-                        pos=self.rect.center,
-                        shoter=self,
-                        speed=12,
-                        angle=self.angle,
-                        kill_shot_distance=2000,
-                        image="images/Rockets/shot1.png",
-                        scale_value=0.09,
-                    )
-                )
-                self.sptite_groups.enemies_shot_group.add(shot)
+            if self.player.first_shot:
+                if self.shot_time == 0:
+                    self.shot_time = time()
+                if time() - self.shot_time >= self.permission_shot:
+                    value = self.pos_weapons_rotation()
+                    for pos in value:
+                        self.sptite_groups.camera_group.add(
+                            shot := Shoots(
+                                pos=(pos),
+                                shoter=self,
+                                speed=8,
+                                angle=self.angle,
+                                kill_shot_distance=2000,
+                                image="images/Rockets/shot1.png",
+                                scale_value=0.09,
+                                owner=self
+                            )
+                        )
+                        self.sptite_groups.enemies_shot_group.add(shot)
+                        self.shot_time = time()
+
+    def decrease_hp(self, value):
+        if self.hp > 0:
+            self.hp -= value
+        if self.hp <= 0:
+            self.kill()
 
     def update(self):
         self.check_position()
         self.rotation()
         self.check_move_count()
-        # self.move()
+        self.move()
         self.shot()
 
         enemies_collision()
+
+        weapons.update_weapons(self, self.angle)

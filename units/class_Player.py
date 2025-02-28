@@ -4,6 +4,8 @@ from pygame.locals import MOUSEWHEEL, MOUSEBUTTONDOWN, K_a, K_w, K_d, K_s
 from pygame.math import Vector2
 from pygame.key import get_pressed
 
+from time import time
+
 from icecream import ic
 
 from config.create_Objects import checks, weapons
@@ -32,6 +34,9 @@ class Player(Sprite):
         self.direction = Vector2(pos)
         self.angle = 0
         self.first_shot = False
+        self.shot_time = 1
+        self.permission_shot = .25
+        self.hp = 5
         self.__post_init__()
 
     def __post_init__(self):
@@ -50,7 +55,8 @@ class Player(Sprite):
                 angle=self.angle,
                 scale_value=(1, 1),
                 size=self.rect.size,
-                obj=self
+                obj=self,
+                owner=self
             )
         )
         self.sprite_groups.player_guard_group.add(shield)
@@ -69,8 +75,14 @@ class Player(Sprite):
 
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
-                self.first_shot = not self.first_shot
-                self.shoot()
+                if not self.first_shot:
+                    self.first_shot = not self.first_shot
+
+                if self.shot_time == 0:
+                    self.shot_time = time()
+                if time() - self.shot_time >= self.permission_shot:
+                    self.shoot()
+                    self.shot_time = time()
 
     def prepare_weapons(self, angle):
         weapons.load_weapons(
@@ -85,12 +97,13 @@ class Player(Sprite):
             self.sprite_groups.camera_group.add(
                 shot := Shoots(
                     pos=(pos),
-                    speed=12,
+                    speed=8,
                     angle=self.angle,
                     shoter=self,
                     kill_shot_distance=2000,
                     image="images/Rockets/shot3.png",
                     scale_value=0.2,
+                    owner=self
                 )
             )
             self.sprite_groups.player_shot_group.add(shot)
@@ -122,6 +135,12 @@ class Player(Sprite):
             self.rect.move_ip(0, -self.speed)
         if keys[K_s]:
             self.rect.move_ip(0, self.speed)
+
+    def decrease_hp(self, value):
+        if self.hp > 0:
+            self.hp -= value
+        if self.hp <= 0:
+            self.kill()
 
     def update(self):
         self.check_position()

@@ -28,6 +28,7 @@ class Shoots(Sprite):
         image=None,
         scale_value=None,
         damage=None,
+        owner=None
     ):
         self.sptite_groups = SpriteGroups()
         super().__init__(self.sptite_groups.camera_group)
@@ -36,6 +37,7 @@ class Shoots(Sprite):
         self.shoter = shoter
         self.damage = damage
         self.speed = speed
+        self.owner = owner
         self.kill_shot_distance = kill_shot_distance
         self.old_shot_coordinate = Vector2(self.shoter.rect.center)
         if image:
@@ -64,8 +66,8 @@ class Shoots(Sprite):
     def update(self):
         self.check_position()
         self.move()
-        player_collision()
-        enemies_collision()
+        player_collision(self)
+        enemies_collision(self)
         shots_collision()
 
 

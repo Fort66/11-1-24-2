@@ -24,10 +24,10 @@ class Explosion(Animator, Sprite):
 
         self.obj = obj
         self.angle = angle
+        self.rect = self.image_rotation.get_rect(center=self.obj.rect.center)
 
     def update(self):
         if self.loops > 0:
-            self.rect.center = self.obj.rect.center
             self.angle = self.obj.angle
             self.image_rotation = self.frames[self.frame][0]
             self.image_rotation = rotozoom(self.image_rotation, self.angle, 1)

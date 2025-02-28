@@ -6,7 +6,7 @@ from loguru import logger
 pg.init()
 
 # logger.add(
-#     stdout,
+#     stdout,ssssss
 #     format='{time} {level} {message}',
 #     level = 'ERROR'
 # )

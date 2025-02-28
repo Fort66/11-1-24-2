@@ -57,11 +57,8 @@ class Animator:
 
         self.frames = self.original_frames.copy()
         self.image_rotation = self.frames[self.frame][0]
-        self.rect = self.image_rotation.get_rect()
 
     def animate(self):
-        # self.size = self.image_rotation.get_size()
-
         if self.frame_time == 0:
             self.frame_time = time()
 
@@ -69,7 +66,6 @@ class Animator:
             if self.loops == -1:
                 self.frame = self.frame + 1 if self.frame < len(self.frames) - 1 else 0
             else:
-
                 if self.loops > 0:
                     self.frame = self.frame + 1 if self.frame < len(self.frames) - 1 else len(self.frames) - 1
                     if self.frame == len(self.frames) - 1:

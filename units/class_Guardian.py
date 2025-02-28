@@ -17,7 +17,8 @@ class Guadrian(Animator, Sprite):
         loops=-1,
         size=None,
         angle=None,
-        scale_value=None
+        scale_value=None,
+        owner=None
     ):
         super().__init__(
             dir_path=dir_path,
@@ -31,6 +32,8 @@ class Guadrian(Animator, Sprite):
         self.angle = angle
         self.obj = obj
         self.destruction_time = 0
+        self.owner = owner
+        self.rect = self.image_rotation.get_rect(center=self.obj.rect.center)
 
     def decrease_level(self, value):
         if self.guard_level > 0:
