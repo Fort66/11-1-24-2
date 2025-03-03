@@ -1,23 +1,37 @@
 from pygame.sprite import Sprite
 from pygame.transform import rotozoom
-from pygame.locals import MOUSEWHEEL, MOUSEBUTTONDOWN, K_a, K_w, K_d, K_s
+from pygame.locals import (
+    MOUSEWHEEL,
+    MOUSEBUTTONDOWN,
+    K_a,
+    K_w,
+    K_d,
+    K_s
+    )
 from pygame.math import Vector2
 from pygame.key import get_pressed
 
 from time import time
 
-from icecream import ic
+from config.create_Objects import (
+    checks,
+    weapons
+    )
 
-from config.create_Objects import checks, weapons
-from config.sources.heroes.source import HEROES
 from units.class_Shoots import Shoots
 from units.class_Guardian import Guadrian
-
-
 
 from classes.class_SptiteGroups import SpriteGroups
 
 from functions.function_player_collision import player_collision
+from functions.function_load_source import load_python_file_source
+
+HERO = load_python_file_source(
+    dir_path='config.sources.heroes',
+    module_name='source',
+    level=1,
+    name_source='HERO'
+)
 
 
 class Player(Sprite):
@@ -35,16 +49,16 @@ class Player(Sprite):
         self.angle = 0
         self.first_shot = False
         self.shot_time = 1
-        self.permission_shot = .25
-        self.hp = 5
+        self.permission_shot = HERO['permission_shot']
+        self.hp = HERO['hp']
         self.__post_init__()
 
     def __post_init__(self):
-        self.image_rotation = HEROES[1]["angle"][0]["sprite"]
+        self.image_rotation = HERO["angle"][0]["sprite"]
         self.rect = self.image_rotation.get_rect(center=self.pos)
 
-        self.speed = HEROES[1]["speed"]
-        self.rotation_speed = HEROES[1]["rotation_speed"]
+        self.speed = HERO["speed"]
+        self.rotation_speed = HERO["rotation_speed"]
 
         self.sprite_groups.camera_group.add(
             shield := Guadrian(
@@ -55,7 +69,6 @@ class Player(Sprite):
                 angle=self.angle,
                 scale_value=(1, 1),
                 size=self.rect.size,
-                obj=self,
                 owner=self
             )
         )
@@ -87,34 +100,17 @@ class Player(Sprite):
     def prepare_weapons(self, angle):
         weapons.load_weapons(
             obj=self,
-            source=HEROES[1]["angle"][angle]["weapons"],
+            source=HERO["angle"][angle]["weapons"],
             angle=angle,
         )
-
-    def shoot(self):
-        value = self.pos_weapons_rotation()
-        for pos in value:
-            self.sprite_groups.camera_group.add(
-                shot := Shoots(
-                    pos=(pos),
-                    speed=8,
-                    angle=self.angle,
-                    shoter=self,
-                    kill_shot_distance=2000,
-                    image="images/Rockets/shot3.png",
-                    scale_value=0.2,
-                    owner=self
-                )
-            )
-            self.sprite_groups.player_shot_group.add(shot)
 
     def pos_weapons_rotation(self):
         return weapons.pos_rotation(obj=self, angle=self.angle)
 
     def rotation(self):
-        for value in HEROES[1]["angle"]:
+        for value in HERO["angle"]:
             if self.angle <= value:
-                self.image = HEROES[1]["angle"][value]["sprite"]
+                self.image = HERO["angle"][value]["sprite"]
                 self.prepare_weapons(value)
                 break
 
@@ -136,6 +132,22 @@ class Player(Sprite):
         if keys[K_s]:
             self.rect.move_ip(0, self.speed)
 
+    def shoot(self):
+        value = self.pos_weapons_rotation()
+        for pos in value:
+            self.sprite_groups.camera_group.add(
+                shot := Shoots(
+                    pos=(pos),
+                    speed=8,
+                    angle=self.angle,
+                    kill_shot_distance=2000,
+                    image="images/Rockets/shot3.png",
+                    scale_value=0.2,
+                    owner=self
+                )
+            )
+            self.sprite_groups.player_shot_group.add(shot)
+
     def decrease_hp(self, value):
         if self.hp > 0:
             self.hp -= value
@@ -145,7 +157,5 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
-
         player_collision()
-
         weapons.update_weapons(self, self.angle)

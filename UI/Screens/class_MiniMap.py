@@ -2,11 +2,17 @@ import pygame as pg
 from pygame.transform import scale_by
 
 from config.create_Objects import screen
+
 from classes.class_SptiteGroups import SpriteGroups
 
 
 class MiniMap:
-    def __init__(self, scale_value=0.05, color_map=(0, 100, 0, 255)):
+    def __init__(
+        self, 
+        scale_value=0.05,
+        color_map=(0, 100, 0, 255)
+        ):
+        
         self.spite_groups = SpriteGroups()
         self.old_screen_size = screen.window.get_size()
         self.scale_value = scale_value

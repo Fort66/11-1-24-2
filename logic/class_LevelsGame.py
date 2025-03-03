@@ -17,7 +17,7 @@ class LevelsGame:
 
     def __new__(cls, *args, **kwargs):
         if not cls.__instance:
-            cls.__instance = super().__new__(cls, *args, **kwargs)
+            cls.__instance = super().__new__(cls)
         return cls.__instance
 
     def __init__(self):
@@ -25,7 +25,7 @@ class LevelsGame:
         self.enemies_attack = round(
             lerp(self.enemies_min, self.enemies_max, self.attack_min / self.attack_max)
         )
-    
+
     def update_levels(self):
         self.enemies_attack = round(
             lerp(self.enemies_min, self.enemies_max, self.attack_min / self.attack_max)

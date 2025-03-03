@@ -1,11 +1,10 @@
-from pygame.sprite import spritecollide, groupcollide
+from pygame.sprite import groupcollide
+
 from time import time
 
 from classes.class_SptiteGroups import SpriteGroups
 
 sprite_groups = SpriteGroups()
-
-from icecream import ic
 
 
 def player_guard_collision():

@@ -1,5 +1,10 @@
 import pygame as pg
-from pygame.locals import QUIT, KEYDOWN, K_ESCAPE, VIDEORESIZE
+from pygame.locals import (
+    QUIT,
+    KEYDOWN,
+    K_ESCAPE,
+    VIDEORESIZE
+    )
 
 
 class CheckEvents:

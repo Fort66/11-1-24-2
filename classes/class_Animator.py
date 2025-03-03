@@ -1,14 +1,13 @@
 from pygame.image import load
-from pygame.transform import scale, scale_by
-from classes.class_SptiteGroups import SpriteGroups
+from pygame.transform import scale_by
+
+from PIL import Image
+import numpy as np
 
 from os import listdir
 from time import time
-import numpy as np
 
-from PIL import Image
-
-from icecream import ic
+from classes.class_SptiteGroups import SpriteGroups
 
 
 class Animator:
@@ -18,10 +17,12 @@ class Animator:
         speed_frame=None,
         loops=-1,
         scale_value=None,
-        size=None
+        size=None,
+        no_group=False
     ):
-        self.sprite_groups = SpriteGroups()
-        super().__init__(self.sprite_groups.camera_group)
+        if not no_group:
+            self.sprite_groups = SpriteGroups()
+            super().__init__(self.sprite_groups.camera_group)
 
         self.dir_path = dir_path
         self.speed_frame = speed_frame
@@ -67,7 +68,7 @@ class Animator:
                 self.frame = self.frame + 1 if self.frame < len(self.frames) - 1 else 0
             else:
                 if self.loops > 0:
-                    self.frame = self.frame + 1 if self.frame < len(self.frames) - 1 else len(self.frames) - 1
+                    self.frame = self.frame + 1 if self.frame < len(self.frames) - 1 else 0
                     if self.frame == len(self.frames) - 1:
                         self.loops -= 1
             self.frame_time = time()

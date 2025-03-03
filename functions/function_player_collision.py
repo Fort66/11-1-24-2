@@ -1,7 +1,8 @@
-from pygame.sprite import spritecollide, groupcollide
-from classes.class_SptiteGroups import SpriteGroups
-from units.class_Explosion import Explosion
+from pygame.sprite import groupcollide
 
+from classes.class_SptiteGroups import SpriteGroups
+
+from units.class_Explosion import Explosion
 
 
 def player_collision():
@@ -11,8 +12,8 @@ def player_collision():
         sprite_groups.enemies_shot_group,
         dokilla=False,
         dokillb=True,
-        collided=None
-        )
+        collided=None,
+    )
     if object_collide:
         lot_hits = len(list(object_collide.values())[0])
         hits = list(object_collide.keys())[0]
@@ -22,13 +23,12 @@ def player_collision():
 
         if hits.hp <= 0:
             explosion = Explosion(
-                dir_path='images/explosions/ship1_expl',
-                speed_frame=.12,
-                scale_value=(.75, .75),
+                dir_path="images/explosions/ship1_expl",
+                speed_frame=0.12,
+                scale_value=(0.75, 0.75),
                 loops=1,
                 obj=hits,
                 angle=hits.angle,
             )
             if not explosion:
                 hits.kill()
-

@@ -1,8 +1,17 @@
 import pygame as pg
-from dataclasses import dataclass
-from pygame.display import set_mode, set_caption, set_icon, get_desktop_sizes
-from pygame.locals import RESIZABLE, FULLSCREEN
+from pygame.display import (
+    set_mode,
+    set_caption,
+    set_icon,
+    get_desktop_sizes
+    )
+from pygame.locals import (
+    RESIZABLE,
+    FULLSCREEN
+    )
 from  pygame.image import load
+
+from dataclasses import dataclass
 
 pg.init()
 
@@ -33,7 +42,6 @@ class ScreenGame:
             self.icon = set_icon(load(self.icon))
 
         self.rect = self.window.get_rect()
-        
-    
+
     def update_caption(self, caption):
         self.caption = set_caption(caption)

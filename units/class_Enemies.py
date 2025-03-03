@@ -1,24 +1,35 @@
 from pygame.sprite import Sprite
-from pygame.transform import scale, flip, rotozoom, scale_by
-from pygame.image import load
+from pygame.transform import rotozoom
 from pygame.math import Vector2
-from pygame.key import get_pressed
-
-from icecream import ic
 
 import math
-from random import uniform, randint, choice
+from random import (
+    uniform,
+    randint,
+    choice
+    )
 from time import time
 
 from units.class_Shoots import Shoots
 from units.class_Guardian import Guadrian
-from config.create_Objects import checks, weapons
 
-from config.sources.enemies.source import ENEMIES
+from config.create_Objects import (
+    checks,
+    weapons
+    )
+# from config.sources.enemies.source import ENEMIES
 
 from classes.class_SptiteGroups import SpriteGroups
 
 from functions.function_enemies_collision import enemies_collision
+from functions.function_load_source import load_python_file_source
+
+ENEMY = load_python_file_source(
+    dir_path='config.sources.enemies',
+    module_name='source',
+    level=1,
+    name_source='ENEMY'
+)
 
 
 class Enemies(Sprite):
@@ -39,7 +50,7 @@ class Enemies(Sprite):
         self.__post_init__()
 
     def __post_init__(self):
-        self.image = ENEMIES[1]["angle"][0]["sprite"]
+        self.image = ENEMY["angle"][0]["sprite"]
         self.image_rotation = self.image.copy()
 
         self.pos = (
@@ -62,7 +73,7 @@ class Enemies(Sprite):
                 speed_frame=0.09,
                 guard_level=randint(3, 10),
                 loops=-1,
-                obj=self,
+                angle=self.angle,
                 scale_value=(1, 1),
                 size=self.rect.size,
                 owner=self
@@ -74,7 +85,7 @@ class Enemies(Sprite):
     def prepare_weapons(self, angle):
         weapons.load_weapons(
             obj=self,
-            source=ENEMIES[1]["angle"][angle]["weapons"],
+            source=ENEMY["angle"][angle]["weapons"],
             angle=angle,
         )
 
@@ -98,10 +109,6 @@ class Enemies(Sprite):
         else:
             self.move_counter -= 1
 
-    def rotate_vector(self, vector, angle):
-        vector = Vector2(vector)
-        return vector.rotate_rad(angle)
-
     def rotation(self):
         rotateX = self.player.rect.centerx - self.rect.centerx
         rotateY = self.player.rect.centery - self.rect.centery
@@ -112,9 +119,9 @@ class Enemies(Sprite):
         else:
             self.angle = 360 + angle_vector
 
-        for value in ENEMIES[1]["angle"]:
+        for value in ENEMY["angle"]:
             if self.angle <= value:
-                self.image = ENEMIES[1]["angle"][value]["sprite"]
+                self.image = ENEMY["angle"][value]["sprite"]
                 break
 
         self.image_rotation = self.image
@@ -134,7 +141,6 @@ class Enemies(Sprite):
                 self.is_min_distance = True
                 # self.random_value()
                 self.change_direction()
-
 
         if (
             Vector2(self.rect.center).distance_to(self.player.rect.center)
@@ -159,7 +165,6 @@ class Enemies(Sprite):
                         self.sptite_groups.camera_group.add(
                             shot := Shoots(
                                 pos=(pos),
-                                shoter=self,
                                 speed=8,
                                 angle=self.angle,
                                 kill_shot_distance=2000,
@@ -183,7 +188,5 @@ class Enemies(Sprite):
         self.check_move_count()
         self.move()
         self.shot()
-
         enemies_collision()
-
         weapons.update_weapons(self, self.angle)

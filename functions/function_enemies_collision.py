@@ -1,5 +1,7 @@
-from pygame.sprite import spritecollide, groupcollide
+from pygame.sprite import groupcollide
+
 from classes.class_SptiteGroups import SpriteGroups
+
 from units.class_Explosion import Explosion
 
 
