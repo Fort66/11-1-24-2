@@ -4,7 +4,7 @@ from pygame.image import load
 SCALE_VALUE = .225
 
 ENEMY = {
-    'angle':{
+        'angle':{
                     0: {
                         'sprite': scale_by(load('images/Enemies/Spaceship1/ship1.png').convert_alpha(), SCALE_VALUE),
                         'weapons': [[0, 0]]
@@ -72,4 +72,11 @@ ENEMY = {
                         'weapons': [[0, 0]]
                         },
                 },
+        'min_distance': 300,
+        'shot_distance': 1500,
+        'hp': 2,
+        'speed': (0, 5),
+        'direction_list': [0, 1, -1],
+        'move_counter': (0, 6),
+        'permission_shot': (1, 3)
         }

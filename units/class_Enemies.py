@@ -40,11 +40,11 @@ class Enemies(Sprite):
 
         self.angle = 0
         self.player = player
-        self.min_distance = 300
-        self.shot_distance = 1500
+        self.min_distance = ENEMY['min_distance']
+        self.shot_distance = ENEMY['shot_distance']
         self.is_min_distance = False
         self.shot_time = 0
-        self.hp = 2
+        self.hp = ENEMY['hp']
         self.random_value()
         self.change_direction()
         self.__post_init__()
@@ -55,12 +55,12 @@ class Enemies(Sprite):
 
         self.pos = (
             uniform(
-                self.sptite_groups.camera_group.background_rect.left + 200,
-                self.sptite_groups.camera_group.background_rect.right - 200,
+                self.sptite_groups.camera_group.background_rect.left + self.image.get_width(),
+                self.sptite_groups.camera_group.background_rect.right - self.image.get_width(),
             ),
             uniform(
-                self.sptite_groups.camera_group.background_rect.top + 200,
-                self.sptite_groups.camera_group.background_rect.bottom - 200,
+                self.sptite_groups.camera_group.background_rect.top + self.image.get_height(),
+                self.sptite_groups.camera_group.background_rect.bottom - self.image.get_height(),
             ),
         )
 
@@ -93,21 +93,20 @@ class Enemies(Sprite):
         return weapons.pos_rotation(obj=self, angle=self.angle)
 
     def random_value(self):
-        self.speed = randint(0, 5)
-        self.direction_list = [0, 1, -1]
-        self.move_counter = randint(0, 600)
-        self.permission_shot = uniform(1, 3)
+        self.speed = randint(ENEMY['speed'][0], ENEMY['speed'][1])
+        self.direction_list = ENEMY['direction_list']
+        self.move_counter = uniform(ENEMY['move_counter'][0], ENEMY['move_counter'][1])
+        self.move_time = time()
+        self.permission_shot = uniform(ENEMY['permission_shot'][0], ENEMY['permission_shot'][1])
 
     def change_direction(self):
         self.moveX = choice(self.direction_list)
         self.moveY = choice(self.direction_list)
 
     def check_move_count(self):
-        if self.move_counter <= 0:
+        if time() - self.move_time >= self.move_counter:
             self.random_value()
             self.change_direction()
-        else:
-            self.move_counter -= 1
 
     def rotation(self):
         rotateX = self.player.rect.centerx - self.rect.centerx

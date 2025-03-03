@@ -10,6 +10,7 @@ from functions.function_guards_collision import (
     enemies_guard_collision,
     guards_collision
     )
+from functions.function_load_source import load_json_source
 
 
 class Guadrian(Animator, Sprite):
