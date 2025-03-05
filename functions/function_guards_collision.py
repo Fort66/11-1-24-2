@@ -16,9 +16,10 @@ def player_guard_collision():
     )
     if object_collide:
         lot_hits = len(list(object_collide.values())[0])
+        hits_damage = list(object_collide.values())[0][0].damage
         hits = list(object_collide.keys())[0]
         if hits.guard_level > 0:
-            hits.decrease_level(lot_hits)
+            hits.decrease_level(lot_hits * hits_damage)
 
         if hits.guard_level <= 0:
             hits.kill()
@@ -33,9 +34,10 @@ def enemies_guard_collision():
     )
     if object_collide:
         lot_hits = len(list(object_collide.values())[0])
+        hits_damage = list(object_collide.values())[0][0].damage
         hits = list(object_collide.keys())[0]
         if hits.guard_level > 0:
-            hits.decrease_level(lot_hits)
+            hits.decrease_level(lot_hits * hits_damage)
 
         if hits.guard_level <= 0:
             hits.kill()

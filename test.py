@@ -1,16 +1,14 @@
 # from functions.function_load_source import load_python_file_source
 
-from icecream import ic
+# from functools import partial
+# from units.class_Guardian import Guadrian
 
-# HERO = load_python_file_source(
-#     dir_path='config.sources.heroes',
-#     module_name='source',
-#     level=1,
-#     name_source='HERO'
-# )
+# from icecream import ic
 
-# ic(HERO)
+# g = partial(Guadrian(), types=1)
+from random import choice, uniform
 
+# _list = ["config.sources.enemies.2.source", "config.sources.enemies.1.source"]
+# print(choice(_list))
 
-from random import randint
-ic(randint([1, 10]))
+print(uniform(3))

@@ -24,12 +24,16 @@ from units.class_Guardian import Guadrian
 from classes.class_SptiteGroups import SpriteGroups
 
 from functions.function_player_collision import player_collision
-from functions.function_load_source import load_python_file_source
+from functions.function_load_source import load_python_file_source, load_json_source
+
+config_dict = load_json_source(
+    dir_path='config/sources/heroes/config'
+)
 
 HERO = load_python_file_source(
-    dir_path='config.sources.heroes',
-    module_name='source',
-    level=1,
+    dir_path=config_dict['ship'],#'config.sources.heroes',
+    # module_name='source',
+    # level=1,
     name_source='HERO'
 )
 
@@ -49,7 +53,7 @@ class Player(Sprite):
         self.angle = 0
         self.first_shot = False
         self.shot_time = 1
-        self.permission_shot = HERO['permission_shot']
+        self.permission_shot = 0 #HERO['permission_shot']
         self.hp = HERO['hp']
         self.__post_init__()
 
@@ -62,12 +66,8 @@ class Player(Sprite):
 
         self.sprite_groups.camera_group.add(
             shield := Guadrian(
-                dir_path="images/Guards/guard1",
-                speed_frame=0.09,
-                guard_level=10,
-                loops=-1,
+                types=config_dict['guard'],
                 angle=self.angle,
-                scale_value=(1, 1),
                 size=self.rect.size,
                 owner=self
             )
@@ -137,15 +137,13 @@ class Player(Sprite):
         for pos in value:
             self.sprite_groups.camera_group.add(
                 shot := Shoots(
+                    types=config_dict['rockets'],
                     pos=(pos),
-                    speed=8,
                     angle=self.angle,
-                    kill_shot_distance=2000,
-                    image="images/Rockets/shot3.png",
-                    scale_value=0.2,
                     owner=self
                 )
             )
+            self.permission_shot = shot.permission_shot
             self.sprite_groups.player_shot_group.add(shot)
 
     def decrease_hp(self, value):

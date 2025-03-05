@@ -22,12 +22,21 @@ from config.create_Objects import (
 from classes.class_SptiteGroups import SpriteGroups
 
 from functions.function_enemies_collision import enemies_collision
-from functions.function_load_source import load_python_file_source
+from functions.function_load_source import load_python_file_source, load_json_source
+
+from random import choice
+
+config_dict = load_json_source(
+    dir_path='config/sources/enemies/config'
+)
+
+# _list = ["config.sources.enemies.1.source", "config.sources.enemies.2.source"]
 
 ENEMY = load_python_file_source(
-    dir_path='config.sources.enemies',
-    module_name='source',
-    level=1,
+    dir_path=config_dict['ship'],
+    # dir_path=choice(_list),
+    # module_name='source',
+    # level=1,
     name_source='ENEMY'
 )
 
@@ -44,6 +53,7 @@ class Enemies(Sprite):
         self.shot_distance = ENEMY['shot_distance']
         self.is_min_distance = False
         self.shot_time = 0
+        self.permission_shot = 0
         self.hp = ENEMY['hp']
         self.random_value()
         self.change_direction()
@@ -69,12 +79,8 @@ class Enemies(Sprite):
 
         self.sptite_groups.camera_group.add(
             shield := Guadrian(
-                dir_path="images/Guards/guard2",
-                speed_frame=0.09,
-                guard_level=randint(3, 10),
-                loops=-1,
+                types=config_dict['guard'],
                 angle=self.angle,
-                scale_value=(1, 1),
                 size=self.rect.size,
                 owner=self
             )
@@ -97,7 +103,7 @@ class Enemies(Sprite):
         self.direction_list = ENEMY['direction_list']
         self.move_counter = uniform(ENEMY['move_counter'][0], ENEMY['move_counter'][1])
         self.move_time = time()
-        self.permission_shot = uniform(ENEMY['permission_shot'][0], ENEMY['permission_shot'][1])
+        # self.permission_shot = uniform(ENEMY['permission_shot'][0], ENEMY['permission_shot'][1])
 
     def change_direction(self):
         self.moveX = choice(self.direction_list)
@@ -163,15 +169,13 @@ class Enemies(Sprite):
                     for pos in value:
                         self.sptite_groups.camera_group.add(
                             shot := Shoots(
+                                types=config_dict['rockets'],
                                 pos=(pos),
-                                speed=8,
                                 angle=self.angle,
-                                kill_shot_distance=2000,
-                                image="images/Rockets/shot1.png",
-                                scale_value=0.09,
                                 owner=self
                             )
                         )
+                        self.permission_shot = shot.permission_shot
                         self.sptite_groups.enemies_shot_group.add(shot)
                         self.shot_time = time()
 
